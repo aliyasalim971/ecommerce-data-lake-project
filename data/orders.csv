@@ -1,0 +1,6 @@
+order_id,customer_id,product_id,order_date,quantity,unit_price,region
+O001,C001,P001,2026-01-01,2,500,South
+O002,C002,P002,2026-01-02,1,1200,North
+O003,C003,P003,2026-01-03,1,55000,South
+O004,C004,P004,2026-01-03,3,2500,East
+O005,C005,P005,2026-01-04,2,1800,West

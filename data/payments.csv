@@ -1,0 +1,6 @@
+order_id,payment_mode,payment_status
+O001,UPI,Success
+O002,Credit Card,Success
+O003,UPI,Success
+O004,Debit Card,Success
+O005,UPI,Pending
