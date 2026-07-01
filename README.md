@@ -229,8 +229,8 @@ ORDER BY region_revenue DESC;
 
 ## AWS Glue Job Configuration
 
-![Glue Job](screenshots/glue_job_configuration.png)
-
+![Glue Job](screenshots/glue_job_details.png)
+![Glue Job](screenshots/glue_job_details1.png)
 ---
 
 ## AWS Glue Crawler
