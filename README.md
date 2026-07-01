@@ -223,7 +223,7 @@ ORDER BY region_revenue DESC;
 
 ## Amazon S3 Bucket
 
-![S3 Bucket](screenshots/s3_bucket_structure.png)
+![S3 Bucket](s3_bucket_structure.png)
 
 ---
 
@@ -247,7 +247,7 @@ ORDER BY region_revenue DESC;
 
 ## Amazon Athena Queries
 
-![Athena](screenshots/athena_query_results.png)
+![Athena](screenshots/athena_query.png)
 
 ---
 
