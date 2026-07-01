@@ -138,7 +138,7 @@ sales_summary/
 
 ---
 
-# ⚙ ETL Pipeline
+# ETL Pipeline
 
 The Glue ETL job performs the following operations:
 
@@ -229,8 +229,8 @@ ORDER BY region_revenue DESC;
 
 ## AWS Glue Job Configuration
 
-![Glue Job](screenshots/glue_job_details.png)
 ![Glue Job](screenshots/glue_job_details1.png)
+![Glue Job](screenshots/glue_job_details2.png)
 ---
 
 ## AWS Glue Crawler
