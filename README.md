@@ -241,7 +241,7 @@ ORDER BY region_revenue DESC;
 
 ## Glue Data Catalog
 
-![Catalog](screenshots/glue_data_catalog.png)
+![Catalog](screenshots/glue_tables.png)
 
 ---
 
