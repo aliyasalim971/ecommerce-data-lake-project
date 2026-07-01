@@ -1,0 +1,48 @@
+{
+	"jobConfig": {
+		"name": "ecommerce_sales_etl_job",
+		"description": "ETL pipeline for processing e-commerce sales data from S3 raw layer into processed and curated Parquet datasets.",
+		"role": "arn:aws:iam::641134884926:role/ecommerce-data-engineering-role",
+		"command": "glueetl",
+		"version": "5.1",
+		"runtime": null,
+		"workerType": "G.1X",
+		"numberOfWorkers": 2,
+		"maxCapacity": 2,
+		"jobRunQueuingEnabled": false,
+		"maxRetries": 0,
+		"timeout": 480,
+		"maxConcurrentRuns": 1,
+		"security": "none",
+		"scriptName": "ecommerce_sales_etl_job.py",
+		"scriptLocation": "s3://aws-glue-assets-641134884926-eu-north-1/scripts/",
+		"language": "python-3",
+		"spark": true,
+		"sparkConfiguration": "standard",
+		"jobParameters": [
+			{
+				"key": "--conf",
+				"value": "spark.eventLog.rolling.enabled=true --conf spark.sql.catalog.glue_catalog.glue.skip-name-validation=true",
+				"existing": false
+			}
+		],
+		"tags": [],
+		"jobMode": "DEVELOPER_MODE",
+		"createdOn": "2026-06-27T07:58:20.006Z",
+		"developerMode": true,
+		"connectionsList": [],
+		"temporaryDirectory": "s3://aws-glue-assets-641134884926-eu-north-1/temporary/",
+		"logging": true,
+		"glueHiveMetastore": true,
+		"etlAutoTuning": true,
+		"metrics": true,
+		"observabilityMetrics": true,
+		"bookmark": "job-bookmark-disable",
+		"sparkPath": "s3://aws-glue-assets-641134884926-eu-north-1/sparkHistoryLogs/",
+		"maintenanceWindow": null,
+		"pythonPath": null
+	},
+	"hasBeenSaved": false,
+	"usageProfileName": null,
+	"script": "import sys\nfrom awsglue.transforms import *\nfrom awsglue.utils import getResolvedOptions\nfrom pyspark.context import SparkContext\nfrom awsglue.context import GlueContext\nfrom awsglue.job import Job\nfrom pyspark.sql.functions import col\nfrom pyspark.sql.functions import col, sum, round\n\n## @params: [JOB_NAME]\nargs = getResolvedOptions(sys.argv, ['JOB_NAME'])\n\nsc = SparkContext()\nglueContext = GlueContext(sc)\nspark = glueContext.spark_session\njob = Job(glueContext)\njob.init(args['JOB_NAME'], args)\n\ncustomers = spark.read.option(\"header\", True).csv(\"s3://ecommerce-sales-datalake-aliyasalim-641134884926-eu-north-1-an/raw/customers/customers.csv\" )\norders = spark.read.option(\"header\", True).csv(\"s3://ecommerce-sales-datalake-aliyasalim-641134884926-eu-north-1-an/raw/orders/orders.csv\")\nproducts = spark.read.option(\"header\", True).csv(\n    \"s3://ecommerce-sales-datalake-aliyasalim-641134884926-eu-north-1-an/raw/products/products.csv\"\n)\npayments = spark.read.option(\"header\", True).csv(\n    \"s3://ecommerce-sales-datalake-aliyasalim-641134884926-eu-north-1-an/raw/payments/payments.csv\"\n)\nprint(\"Customers\")\ncustomers.show(5)\n\nprint(\"Orders\")\norders.show(5)\n\nprint(\"Products\")\nproducts.show(5)\n\nprint(\"Payments\")\npayments.show(5)\n\ncustomers = customers.dropDuplicates()\norders = orders.dropDuplicates()\nproducts = products.dropDuplicates()\npayments = payments.dropDuplicates()\n\norders = orders.dropna(\n    subset=[\"order_id\", \"customer_id\", \"product_id\"]\n)\norders = orders.withColumn(\"quantity\", col(\"quantity\").cast(\"int\"))\n\norders = orders.withColumn(\n    \"unit_price\",\n    col(\"unit_price\").cast(\"double\")\n)\n\norders = orders.withColumn(\n    \"total_amount\",\n    col(\"quantity\") * col(\"unit_price\")\n)\n\nsales = orders.join(\n    customers,\n    on=\"customer_id\",\n    how=\"left\"\n)\n\nsales = sales.join(\n    products,\n    on=\"product_id\",\n    how=\"left\"\n)\n\nsales_summary = sales.groupBy(\"order_date\").agg(\n    round(sum(\"total_amount\"), 2).alias(\"daily_sales\")\n)\n\ncustomer_revenue = sales.groupBy(\n    \"customer_id\",\n    \"customer_name\"\n).agg(\n    round(sum(\"total_amount\"), 2).alias(\"customer_revenue\")\n)\n\nproduct_performance = sales.groupBy(\n    \"product_id\",\n    \"product_name\",\n    \"category\"\n).agg(\n    round(sum(\"total_amount\"), 2).alias(\"product_sales\")\n)\n\nregion_sales = sales.groupBy(\"region\").agg(\n    round(sum(\"total_amount\"), 2).alias(\"region_revenue\")\n)\nsales_summary.write.mode(\"overwrite\").parquet(\n    \"s3://ecommerce-sales-datalake-aliyasalim-641134884926-eu-north-1-an/curated/sales_summary/\"\n)\n\ncustomer_revenue.write.mode(\"overwrite\").parquet(\n    \"s3://ecommerce-sales-datalake-aliyasalim-641134884926-eu-north-1-an/curated/customer_revenue/\"\n)\n\nproduct_performance.write.mode(\"overwrite\").parquet(\n    \"s3://ecommerce-sales-datalake-aliyasalim-641134884926-eu-north-1-an/curated/product_performance/\"\n)\n\nregion_sales.write.mode(\"overwrite\").parquet(\n    \"s3://ecommerce-sales-datalake-aliyasalim-641134884926-eu-north-1-an/curated/region_sales/\"\n)\njob.commit()"
+}
