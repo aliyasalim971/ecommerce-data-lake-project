@@ -181,7 +181,7 @@ Revenue grouped by customer region.
 
 ---
 
-# 🗄 Glue Data Catalog
+# Glue Data Catalog
 
 AWS Glue Crawlers automatically scan the curated Parquet files and register them as queryable tables inside the Glue Data Catalog.
 
@@ -223,7 +223,7 @@ ORDER BY region_revenue DESC;
 
 ## Amazon S3 Bucket
 
-![S3 Bucket](s3_bucket_structure.png)
+![S3 Bucket](s3_bucket.png)
 
 ---
 
