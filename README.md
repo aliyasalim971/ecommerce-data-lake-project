@@ -268,7 +268,7 @@ ORDER BY region_revenue DESC;
 
 ---
 
-# 📈 Skills Demonstrated
+# Skills Demonstrated
 
 - Python
 - Pandas
