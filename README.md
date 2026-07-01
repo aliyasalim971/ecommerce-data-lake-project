@@ -223,7 +223,7 @@ ORDER BY region_revenue DESC;
 
 ## Amazon S3 Bucket
 
-![S3 Bucket](s3_bucket.png)
+![S3 Bucket](screenshots/s3_bucket.png)
 
 ---
 
